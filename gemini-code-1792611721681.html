@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeQuest — حوّل حياتك إلى لعبة</title>
+    <!-- CSS Link -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Statistics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body class="dark-theme">
+
+    <!-- Top Navigation Bar -->
+    <header class="navbar">
+        <div class="logo-container">
+            <span class="logo-icon">🎮</span>
+            <span class="logo-text">LifeQuest</span>
+        </div>
+        
+        <nav class="nav-links" id="navLinks">
+            <a href="#" class="nav-item active" onclick="showPage('dashboard')"><i class="fa-solid fa-house"></i> الرئيسية</a>
+            <a href="#" class="nav-item" onclick="showPage('missions')"><i class="fa-solid fa-bullseye"></i> المهام</a>
+            <a href="#" class="nav-item" onclick="showPage('achievements')"><i class="fa-solid fa-trophy"></i> الإنجازات</a>
+            <a href="#" class="nav-item" onclick="showPage('statistics')"><i class="fa-solid fa-chart-column"></i> الإحصائيات</a>
+            <a href="#" class="nav-item" onclick="showPage('profile')"><i class="fa-solid fa-user"></i> البروفايل</a>
+            <a href="#" class="nav-item" onclick="showPage('settings')"><i class="fa-solid fa-gear"></i> الإعدادات</a>
+        </nav>
+
+        <div class="user-level-badge">
+            <div class="level-info">
+                <span class="level-title">المستوى <span id="nav-level">7</span></span>
+                <span class="xp-text" id="nav-xp-text">1,240 / 1,500 XP</span>
+            </div>
+            <div class="mini-progress-bar">
+                <div class="mini-progress-fill" id="nav-progress-fill" style="width: 82%;"></div>
+            </div>
+        </div>
+
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-container">
+
+        <!-- 🚀 Landing Page View (صفحة الهبوط) -->
+        <section id="page-landing" class="page-view active">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">حوّل حياتك إلى <span class="highlight">مغامرة ألعاب!</span></h1>
+                    <p class="hero-subtitle">أنقذ يومك، أنجز مهامك، اجمع الـ XP، ارفع مستواك، وكن النسخة الأفضل من نفسك.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary btn-lg" onclick="showPage('dashboard')">ابدأ مغامرتك الآن 🚀</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="avatar-card-preview">
+                        <div class="avatar-glow"></div>
+                        <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Yassen" alt="Hero Avatar">
+                        <h3>LEVEL 10 MASTER</h3>
+                        <div class="badge-tag">🔥 30 Day Streak</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🏠 Dashboard View (الصفحة الرئيسية) -->
+        <section id="page-dashboard" class="page-view">
+            <div class="welcome-banner">
+                <h2>أهلاً بك مجدداً، <span id="dash-user-name">ياسين</span>! 👋</h2>
+                <p>هل أنت مستعد لإنجاز مهام اليوم وحصد الـ XP؟</p>
+            </div>
+
+            <!-- Daily Challenge / Quest -->
+            <div class="daily-challenge-card">
+                <div class="challenge-header">
+                    <span class="challenge-tag">🎯 تحدي اليوم الخاص</span>
+                    <span class="xp-reward">+50 XP</span>
+                </div>
+                <h3>اقرأ أو ادرس شيئاً جديداً لمدة 30 دقيقة</h3>
+                <div class="challenge-actions">
+                    <button class="btn btn-success btn-sm" onclick="completeDailyChallenge()">✅ أتممت التحدي!</button>
+                </div>
+            </div>
+
+            <!-- Stats Grid Cards -->
+            <div class="stats-cards-grid">
+                <div class="stat-card">
+                    <div class="stat-icon fire"><i class="fa-solid fa-fire"></i></div>
+                    <div class="stat-details">
+                        <h4>الـ Streak الحالي</h4>
+                        <p class="stat-number" id="dash-streak">7 أيام</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon star"><i class="fa-solid fa-star"></i></div>
+                    <div class="stat-details">
+                        <h4>إجمالي الـ XP</h4>
+                        <p class="stat-number" id="dash-total-xp">1,240 XP</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon target"><i class="fa-solid fa-bullseye"></i></div>
+                    <div class="stat-details">
+                        <h4>المهام المكتملة</h4>
+                        <p class="stat-number" id="dash-completed-count">8 / 10</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon trophy"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="stat-details">
+                        <h4>الإنجازات</h4>
+                        <p class="stat-number" id="dash-achievements-count">12</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Missions Preview -->
+            <div class="section-header">
+                <h3>🎯 مهام اليوم</h3>
+                <button class="btn btn-primary btn-sm" onclick="openCreateModal()">+ مهمة جديدة</button>
+            </div>
+            <div class="table-responsive">
+                <table class="missions-table">
+                    <thead>
+                        <tr>
+                            <th>المهمة</th>
+                            <th>التصنيف</th>
+                            <th>النقاط (XP)</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboard-missions-list">
+                        <!-- Loaded dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ⚔️ Missions View (صفحة المهام) -->
+        <section id="page-missions" class="page-view">
+            <div class="section-header">
+                <h2>⚔️ جميع المهام</h2>
+                <button class="btn btn-primary" onclick="openCreateModal()">+ إضافة مهمة جديدة</button>
+            </div>
+
+            <div class="missions-filters">
+                <button class="filter-btn active" onclick="filterMissions('all')">الكل</button>
+                <button class="filter-btn" onclick="filterMissions('📚 Study')">📚 دراسة</button>
+                <button class="filter-btn" onclick="filterMissions('🏃 Health')">🏃 صحة</button>
+                <button class="filter-btn" onclick="filterMissions('🧠 Personal')">🧠 شخصي</button>
+                <button class="filter-btn" onclick="filterMissions('🎨 Creativity')">🎨 إبداع</button>
+                <button class="filter-btn" onclick="filterMissions('🧹 Life')">🧹 حياة</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="missions-table">
+                    <thead>
+                        <tr>
+                            <th>المهمة</th>
+                            <th>التصنيف</th>
+                            <th>الصعوبة</th>
+                            <th>النقاط (XP)</th>
+                            <th>الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="full-missions-list">
+                        <!-- Loaded dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 🏆 Achievements View (صفحة الإنجازات) -->
+        <section id="page-achievements" class="page-view">
+            <div class="section-header">
+                <h2>🏆 الأوسمة والإنجازات</h2>
+            </div>
+            <div class="achievements-grid" id="achievements-container">
+                <!-- Dynamic Badges -->
+            </div>
+        </section>
+
+        <!-- 📊 Statistics View (صفحة الإحصائيات) -->
+        <section id="page-statistics" class="page-view">
+            <div class="section-header">
+                <h2>📊 الإحصائيات والتقدم</h2>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>التقدم الأسبوعي (XP)</h3>
+                    <canvas id="weeklyXpChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>توزيع المهام حسب التصنيف</h3>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- 👤 Profile View (صفحة البروفايل) -->
+        <section id="page-profile" class="page-view">
+            <div class="profile-card">
+                <div class="profile-avatar-wrapper">
+                    <img id="profile-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=Yassen" alt="User Avatar">
+                </div>
+                <h2 id="profile-name">ياسين</h2>
+                <div class="profile-level-badge" id="profile-level">LEVEL 7</div>
+                <div class="profile-xp-text" id="profile-xp">1,240 XP</div>
+
+                <div class="profile-mini-stats">
+                    <div class="p-stat">
+                        <i class="fa-solid fa-fire"></i>
+                        <span id="profile-streak">7 أيام</span>
+                        <small>أطول Streak</small>
+                    </div>
+                    <div class="p-stat">
+                        <i class="fa-solid fa-check-double"></i>
+                        <span id="profile-completed">143</span>
+                        <small>مهام مكتملة</small>
+                    </div>
+                    <div class="p-stat">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span id="profile-achievements">12</span>
+                        <small>أوسمة محققة</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ⚙️ Settings View (صفحة الإعدادات) -->
+        <section id="page-settings" class="page-view">
+            <div class="section-header">
+                <h2>⚙️ إعدادات الحساب</h2>
+            </div>
+            <div class="settings-card">
+                <div class="form-group">
+                    <label>اسم المستخدم:</label>
+                    <input type="text" id="setting-username" class="form-control" value="ياسين">
+                </div>
+                <div class="form-group">
+                    <label>المظهر (Theme):</label>
+                    <select id="setting-theme" class="form-control">
+                        <option value="dark">Dark Gaming (داكن)</option>
+                        <option value="light">Light Mode (فاتح)</option>
+                    </select>
+                </div>
+                <div class="settings-actions">
+                    <button class="btn btn-primary" onclick="saveSettings()">حفظ التغييرات</button>
+                    <button class="btn btn-danger" onclick="resetProgress()">إعادة ضبط التقدم ⚠️</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ➕ Create Mission Modal -->
+    <div class="modal-overlay" id="createMissionModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>➕ إنشاء مهمة جديدة</h3>
+                <button class="modal-close" onclick="closeCreateModal()">&times;</button>
+            </div>
+            <form id="createMissionForm" onsubmit="handleCreateMission(event)">
+                <div class="form-group">
+                    <label>اسم المهمة:</label>
+                    <input type="text" id="missionTitle" class="form-control" placeholder="مثال: دراسة الفيزياء" required>
+                </div>
+                <div class="form-group">
+                    <label>التصنيف:</label>
+                    <select id="missionCategory" class="form-control">
+                        <option value="📚 Study">📚 Study (دراسة)</option>
+                        <option value="🏃 Health">🏃 Health (صحة)</option>
+                        <option value="🧠 Personal">🧠 Personal (شخصي)</option>
+                        <option value="🎨 Creativity">🎨 Creativity (إبداع)</option>
+                        <option value="🧹 Life">🧹 Life (حياة)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>الصعوبة (النقاط):</label>
+                    <select id="missionDifficulty" class="form-control">
+                        <option value="20">🟢 سهل → 20 XP</option>
+                        <option value="40" selected>🟡 متوسط → 40 XP</option>
+                        <option value="70">🔴 صعب → 70 XP</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateModal()">إلغاء</button>
+                    <button type="submit" class="btn btn-primary">إنشاء المهمة 🚀</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // State Management
+        let userState = {
+            name: "ياسين",
+            level: 7,
+            xp: 1240,
+            streak: 7,
+            completedCount: 8,
+            missions: [
+                { id: 1, title: "Study Chemistry", category: "📚 Study", xp: 50, completed: false, difficulty: "Medium" },
+                { id: 2, title: "Read 10 pages", category: "📖 Reading", xp: 30, completed: false, difficulty: "Easy" },
+                { id: 3, title: "Exercise", category: "🏃 Health", xp: 40, completed: false, difficulty: "Medium" },
+                { id: 4, title: "Clean your desk", category: "🧹 Life", xp: 20, completed: false, difficulty: "Easy" }
+            ],
+            achievements: [
+                { id: 1, title: "First Quest", desc: "أنجز أول مهمة لك", unlocked: true, icon: "🥇" },
+                { id: 2, title: "7-Day Warrior", desc: "حافظ على Streak لمدة 7 أيام", unlocked: true, icon: "🔥" },
+                { id: 3, title: "Knowledge Seeker", desc: "أكمل 50 مهمة دراسية", unlocked: false, icon: "📚" },
+                { id: 4, title: "XP Hunter", desc: "اجمع 1,000 XP", unlocked: true, icon: "⚡" },
+                { id: 5, title: "LifeQuest Master", desc: "صل إلى المستوى 10", unlocked: false, icon: "👑" }
+            ]
+        };
+
+        // Navigation Engine
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            
+            const selectedPage = document.getElementById(`page-${pageId}`);
+            if(selectedPage) selectedPage.classList.add('active');
+            
+            if(pageId === 'statistics') initCharts();
+            renderUI();
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        // Render Functions
+        function renderUI() {
+            // Level XP Calculations
+            const nextLevelXp = userState.level * 200;
+            const progressPct = Math.min((userState.xp / nextLevelXp) * 100, 100);
+
+            document.getElementById('nav-level').innerText = userState.level;
+            document.getElementById('nav-xp-text').innerText = `${userState.xp} / ${nextLevelXp} XP`;
+            document.getElementById('nav-progress-fill').style.width = `${progressPct}%`;
+
+            // Dashboard Updates
+            document.getElementById('dash-user-name').innerText = userState.name;
+            document.getElementById('dash-streak').innerText = `${userState.streak} أيام`;
+            document.getElementById('dash-total-xp').innerText = `${userState.xp} XP`;
+            document.getElementById('dash-completed-count').innerText = `${userState.completedCount} / ${userState.missions.length}`;
+            document.getElementById('dash-achievements-count').innerText = userState.achievements.filter(a => a.unlocked).length;
+
+            renderMissions();
+            renderAchievements();
+        }
+
+        function renderMissions(filterCategory = 'all') {
+            const dashTable = document.getElementById('dashboard-missions-list');
+            const fullTable = document.getElementById('full-missions-list');
+
+            let filtered = userState.missions;
+            if(filterCategory !== 'all') {
+                filtered = userState.missions.filter(m => m.category === filterCategory);
+            }
+
+            // Render Dashboard Mini List
+            dashTable.innerHTML = userState.missions.map(m => `
+                <tr>
+                    <td><strong>${m.title}</strong></td>
+                    <td><span class="badge">${m.category}</span></td>
+                    <td><span class="xp-badge">+${m.xp} XP</span></td>
+                    <td>
+                        <button class="btn btn-sm ${m.completed ? 'btn-success' : 'btn-outline'}" 
+                                onclick="toggleMission(${m.id})">
+                            ${m.completed ? '✅ مكتملة' : '⬜ إنجاز'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Render Full List
+            fullTable.innerHTML = filtered.map(m => `
+                <tr>
+                    <td><strong>${m.title}</strong></td>
+                    <td><span class="badge">${m.category}</span></td>
+                    <td>${m.difficulty || 'Medium'}</td>
+                    <td><span class="xp-badge">+${m.xp} XP</span></td>
+                    <td>
+                        <button class="btn btn-sm ${m.completed ? 'btn-success' : 'btn-outline'}" 
+                                onclick="toggleMission(${m.id})">
+                            ${m.completed ? '✅ مكتملة' : 'إكمال المهمة'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function toggleMission(id) {
+            const mission = userState.missions.find(m => m.id === id);
+            if(mission) {
+                mission.completed = !mission.completed;
+                if(mission.completed) {
+                    userState.xp += mission.xp;
+                    userState.completedCount++;
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+                    checkLevelUp();
+                } else {
+                    userState.xp = Math.max(0, userState.xp - mission.xp);
+                    userState.completedCount--;
+                }
+                renderUI();
+            }
+        }
+
+        function checkLevelUp() {
+            const targetXp = userState.level * 200;
+            if(userState.xp >= targetXp) {
+                userState.level++;
+                alert(`🎉 مبروك! لقد وصلت إلى المستوى ${userState.level}!`);
+            }
+        }
+
+        function renderAchievements() {
+            const container = document.getElementById('achievements-container');
+            container.innerHTML = userState.achievements.map(a => `
+                <div class="achievement-card ${a.unlocked ? 'unlocked' : 'locked'}">
+                    <div class="achievement-icon">${a.icon}</div>
+                    <h3>${a.title}</h3>
+                    <p>${a.desc}</p>
+                    <span class="status-tag">${a.unlocked ? '🔓 تم الفتح' : '🔒 مغلق'}</span>
+                </div>
+            `).join('');
+        }
+
+        // Modal Controls
+        function openCreateModal() { document.getElementById('createMissionModal').classList.add('active'); }
+        function closeCreateModal() { document.getElementById('createMissionModal').classList.remove('active'); }
+
+        function handleCreateMission(e) {
+            e.preventDefault();
+            const title = document.getElementById('missionTitle').value;
+            const category = document.getElementById('missionCategory').value;
+            const xp = parseInt(document.getElementById('missionDifficulty').value);
+
+            userState.missions.push({
+                id: Date.now(),
+                title: title,
+                category: category,
+                xp: xp,
+                completed: false
+            });
+
+            closeCreateModal();
+            renderUI();
+            document.getElementById('createMissionForm').reset();
+        }
+
+        function completeDailyChallenge() {
+            userState.xp += 50;
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            checkLevelUp();
+            renderUI();
+            alert("🎯 أبدعت! تم إضافة +50 XP لحسابك.");
+        }
+
+        function filterMissions(cat) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            renderMissions(cat);
+        }
+
+        // Chart Initialization
+        let weeklyChart, categoryChartInstance;
+        function initCharts() {
+            if(weeklyChart) weeklyChart.destroy();
+            if(categoryChartInstance) categoryChartInstance.destroy();
+
+            const ctx1 = document.getElementById('weeklyXpChart').getContext('2d');
+            weeklyChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'الـ XP المكتسب',
+                        data: [120, 200, 150, 300, 250, 400, 320],
+                        backgroundColor: '#6366f1'
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            const ctx2 = document.getElementById('categoryChart').getContext('2d');
+            categoryChartInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Study', 'Health', 'Personal', 'Creativity'],
+                    datasets: [{
+                        data: [45, 20, 20, 15],
+                        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ec4899']
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+
+        // Init App
+        renderUI();
+    </script>
+</body>
+</html>
